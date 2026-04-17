@@ -53,12 +53,7 @@ def parse_version(s: str) -> tuple[int, ...]:
 
 
 def check_min_version(version: str) -> None:
-    if parse_version(version) > parse_version(C.VERSION):
-        raise cfgv.ValidationError(
-            f'pre-commit version {version} is required but version '
-            f'{C.VERSION} is installed.  '
-            f'Perhaps run `pip install --upgrade pre-commit`.',
-        )
+    pass
 
 
 _STAGES = {
@@ -69,7 +64,7 @@ _STAGES = {
 
 
 def transform_stage(stage: str) -> str:
-    return _STAGES.get(stage, stage)
+    pass
 
 
 MINIMAL_MANIFEST_SCHEMA = cfgv.Array(
@@ -114,20 +109,10 @@ class StagesMigrationNoDefault(NamedTuple):
     default: Sequence[str]
 
     def check(self, dct: dict[str, Any]) -> None:
-        if self.key not in dct:
-            return
-
-        with cfgv.validate_context(f'At key: {self.key}'):
-            val = dct[self.key]
-            cfgv.check_array(cfgv.check_any)(val)
-
-            val = [transform_stage(v) for v in val]
-            cfgv.check_array(cfgv.check_one_of(STAGES))(val)
+        pass
 
     def apply_default(self, dct: dict[str, Any]) -> None:
-        if self.key not in dct:
-            return
-        dct[self.key] = [transform_stage(v) for v in dct[self.key]]
+        pass
 
     def remove_default(self, dct: dict[str, Any]) -> None:
         raise NotImplementedError
@@ -135,28 +120,14 @@ class StagesMigrationNoDefault(NamedTuple):
 
 class StagesMigration(StagesMigrationNoDefault):
     def apply_default(self, dct: dict[str, Any]) -> None:
-        dct.setdefault(self.key, self.default)
-        super().apply_default(dct)
+        pass
 
 
 class DeprecatedStagesWarning(NamedTuple):
     key: str
 
     def check(self, dct: dict[str, Any]) -> None:
-        if self.key not in dct:
-            return
-
-        val = dct[self.key]
-        cfgv.check_array(cfgv.check_any)(val)
-
-        legacy_stages = [stage for stage in val if stage in _STAGES]
-        if legacy_stages:
-            logger.warning(
-                f'hook id `{dct["id"]}` uses deprecated stage names '
-                f'({", ".join(legacy_stages)}) which will be removed in a '
-                f'future version.  '
-                f'run: `pre-commit migrate-config` to automatically fix this.',
-            )
+        pass
 
     def apply_default(self, dct: dict[str, Any]) -> None:
         pass
@@ -169,20 +140,7 @@ class DeprecatedDefaultStagesWarning(NamedTuple):
     key: str
 
     def check(self, dct: dict[str, Any]) -> None:
-        if self.key not in dct:
-            return
-
-        val = dct[self.key]
-        cfgv.check_array(cfgv.check_any)(val)
-
-        legacy_stages = [stage for stage in val if stage in _STAGES]
-        if legacy_stages:
-            logger.warning(
-                f'top-level `default_stages` uses deprecated stage names '
-                f'({", ".join(legacy_stages)}) which will be removed in a '
-                f'future version.  '
-                f'run: `pre-commit migrate-config` to automatically fix this.',
-            )
+        pass
 
     def apply_default(self, dct: dict[str, Any]) -> None:
         pass
@@ -192,10 +150,7 @@ class DeprecatedDefaultStagesWarning(NamedTuple):
 
 
 def _translate_language(name: str) -> str:
-    return {
-        'system': 'unsupported',
-        'script': 'unsupported_script',
-    }.get(name, name)
+    pass
 
 
 class LanguageMigration(NamedTuple):  # remove
@@ -203,17 +158,10 @@ class LanguageMigration(NamedTuple):  # remove
     check_fn: Callable[[object], None]
 
     def check(self, dct: dict[str, Any]) -> None:
-        if self.key not in dct:
-            return
-
-        with cfgv.validate_context(f'At key: {self.key}'):
-            self.check_fn(_translate_language(dct[self.key]))
+        pass
 
     def apply_default(self, dct: dict[str, Any]) -> None:
-        if self.key not in dct:
-            return
-
-        dct[self.key] = _translate_language(dct[self.key])
+        pass
 
     def remove_default(self, dct: dict[str, Any]) -> None:
         raise NotImplementedError
@@ -221,10 +169,7 @@ class LanguageMigration(NamedTuple):  # remove
 
 class LanguageMigrationRequired(LanguageMigration):  # replace with Required
     def check(self, dct: dict[str, Any]) -> None:
-        if self.key not in dct:
-            raise cfgv.ValidationError(f'Missing required key: {self.key}')
-
-        super().check(dct)
+        pass
 
 
 MANIFEST_HOOK_DICT = cfgv.Map(
@@ -271,12 +216,7 @@ class InvalidManifestError(FatalError):
 
 
 def _load_manifest_forward_compat(contents: str) -> object:
-    obj = yaml_load(contents)
-    if isinstance(obj, dict):
-        check_min_version('5')
-        raise AssertionError('unreachable')
-    else:
-        return obj
+    pass
 
 
 load_manifest = functools.partial(
@@ -293,58 +233,17 @@ META = 'meta'
 
 class WarnMutableRev(cfgv.Conditional):
     def check(self, dct: dict[str, Any]) -> None:
-        super().check(dct)
-
-        if self.key in dct:
-            rev = dct[self.key]
-
-            if '.' not in rev and not re.match(r'^[a-fA-F0-9]+$', rev):
-                logger.warning(
-                    f'The {self.key!r} field of repo {dct["repo"]!r} '
-                    f'appears to be a mutable reference '
-                    f'(moving tag / branch).  Mutable references are never '
-                    f'updated after first install and are not supported.  '
-                    f'See https://pre-commit.com/#using-the-latest-version-for-a-repository '  # noqa: E501
-                    f'for more details.  '
-                    f'Hint: `pre-commit autoupdate` often fixes this.',
-                )
+        pass
 
 
 class OptionalSensibleRegexAtHook(cfgv.OptionalNoDefault):
     def check(self, dct: dict[str, Any]) -> None:
-        super().check(dct)
-
-        if '/*' in dct.get(self.key, ''):
-            logger.warning(
-                f'The {self.key!r} field in hook {dct.get("id")!r} is a '
-                f"regex, not a glob -- matching '/*' probably isn't what you "
-                f'want here',
-            )
-        for fwd_slash_re in (r'[\\/]', r'[\/]', r'[/\\]'):
-            if fwd_slash_re in dct.get(self.key, ''):
-                logger.warning(
-                    fr'pre-commit normalizes slashes in the {self.key!r} '
-                    fr'field in hook {dct.get("id")!r} to forward slashes, '
-                    fr'so you can use / instead of {fwd_slash_re}',
-                )
+        pass
 
 
 class OptionalSensibleRegexAtTop(cfgv.OptionalNoDefault):
     def check(self, dct: dict[str, Any]) -> None:
-        super().check(dct)
-
-        if '/*' in dct.get(self.key, ''):
-            logger.warning(
-                f'The top-level {self.key!r} field is a regex, not a glob -- '
-                f"matching '/*' probably isn't what you want here",
-            )
-        for fwd_slash_re in (r'[\\/]', r'[\/]', r'[/\\]'):
-            if fwd_slash_re in dct.get(self.key, ''):
-                logger.warning(
-                    fr'pre-commit normalizes the slashes in the top-level '
-                    fr'{self.key!r} field to forward slashes, so you '
-                    fr'can use / instead of {fwd_slash_re}',
-                )
+        pass
 
 
 def _entry(modname: str) -> str:
@@ -360,7 +259,7 @@ def warn_unknown_keys_root(
         orig_keys: Sequence[str],
         dct: dict[str, str],
 ) -> None:
-    logger.warning(f'Unexpected key(s) present at root: {", ".join(extra)}')
+    pass
 
 
 def warn_unknown_keys_repo(
@@ -368,9 +267,7 @@ def warn_unknown_keys_repo(
         orig_keys: Sequence[str],
         dct: dict[str, str],
 ) -> None:
-    logger.warning(
-        f'Unexpected key(s) present on {dct["repo"]}: {", ".join(extra)}',
-    )
+    pass
 
 
 _meta = (
@@ -400,8 +297,7 @@ _meta = (
 
 class NotAllowed(cfgv.OptionalNoDefault):
     def check(self, dct: dict[str, Any]) -> None:
-        if self.key in dct:
-            raise cfgv.ValidationError(f'{self.key!r} cannot be overridden')
+        pass
 
 
 _COMMON_HOOK_WARNINGS = (

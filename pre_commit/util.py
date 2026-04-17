@@ -62,10 +62,7 @@ class CalledProcessError(RuntimeError):
 
     def __bytes__(self) -> bytes:
         def _indent_or_none(part: bytes | None) -> bytes:
-            if part:
-                return b'\n    ' + part.replace(b'\n', b'\n    ').rstrip()
-            else:
-                return b' (none)'
+            pass
 
         return b''.join((
             f'command: {self.cmd!r}\n'.encode(),
@@ -146,9 +143,7 @@ if sys.platform != 'win32':  # pragma: win32 no cover
                 self.w = None
 
         def close_r(self) -> None:
-            assert self.r is not None
-            os.close(self.r)
-            self.r = None
+            pass
 
         def __exit__(
                 self,
@@ -207,16 +202,7 @@ def _handle_readonly(
         path: str,
         exc: BaseException,
 ) -> None:
-    if (
-            func in (os.rmdir, os.remove, os.unlink) and
-            isinstance(exc, OSError) and
-            exc.errno in {errno.EACCES, errno.EPERM}
-    ):
-        for p in (path, os.path.dirname(path)):
-            os.chmod(p, os.stat(p).st_mode | stat.S_IWUSR)
-        func(path)
-    else:
-        raise
+    pass
 
 
 if sys.version_info < (3, 12):  # pragma: <3.12 cover
@@ -225,7 +211,7 @@ if sys.version_info < (3, 12):  # pragma: <3.12 cover
         path: str,
         excinfo: tuple[type[BaseException], BaseException, TracebackType],
     ) -> None:
-        return _handle_readonly(func, path, excinfo[1])
+        pass
 
     def rmtree(path: str) -> None:
         shutil.rmtree(path, ignore_errors=False, onerror=_handle_readonly_old)

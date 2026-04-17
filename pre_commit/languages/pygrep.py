@@ -20,58 +20,25 @@ in_env = lang_base.no_env
 
 
 def _process_filename_by_line(pattern: Pattern[bytes], filename: str) -> int:
-    retv = 0
-    with open(filename, 'rb') as f:
-        for line_no, line in enumerate(f, start=1):
-            if pattern.search(line):
-                retv = 1
-                output.write(f'{filename}:{line_no}:')
-                output.write_line_b(line.rstrip(b'\r\n'))
-    return retv
+    pass
 
 
 def _process_filename_at_once(pattern: Pattern[bytes], filename: str) -> int:
-    retv = 0
-    with open(filename, 'rb') as f:
-        contents = f.read()
-        match = pattern.search(contents)
-        if match:
-            retv = 1
-            line_no = contents[:match.start()].count(b'\n')
-            output.write(f'{filename}:{line_no + 1}:')
-
-            matched_lines = match[0].split(b'\n')
-            matched_lines[0] = contents.split(b'\n')[line_no]
-
-            output.write_line_b(b'\n'.join(matched_lines))
-    return retv
+    pass
 
 
 def _process_filename_by_line_negated(
         pattern: Pattern[bytes],
         filename: str,
 ) -> int:
-    with open(filename, 'rb') as f:
-        for line in f:
-            if pattern.search(line):
-                return 0
-        else:
-            output.write_line(filename)
-            return 1
+    pass
 
 
 def _process_filename_at_once_negated(
         pattern: Pattern[bytes],
         filename: str,
 ) -> int:
-    with open(filename, 'rb') as f:
-        contents = f.read()
-    match = pattern.search(contents)
-    if match:
-        return 0
-    else:
-        output.write_line(filename)
-        return 1
+    pass
 
 
 class Choice(NamedTuple):

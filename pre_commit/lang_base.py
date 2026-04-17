@@ -112,11 +112,11 @@ def assert_no_additional_deps(
 
 
 def basic_get_default_version() -> str:
-    return C.DEFAULT
+    pass
 
 
 def basic_health_check(prefix: Prefix, language_version: str) -> str | None:
-    return None
+    pass
 
 
 def no_install(
@@ -129,7 +129,7 @@ def no_install(
 
 @contextlib.contextmanager
 def no_env(prefix: Prefix, version: str) -> Generator[None]:
-    yield
+    pass
 
 
 def target_concurrency() -> int:
@@ -188,9 +188,4 @@ def basic_run_hook(
         require_serial: bool,
         color: bool,
 ) -> tuple[int, bytes]:
-    return run_xargs(
-        hook_cmd(entry, args),
-        file_args,
-        require_serial=require_serial,
-        color=color,
-    )
+    pass

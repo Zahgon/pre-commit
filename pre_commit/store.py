@@ -196,16 +196,7 @@ class Store:
         """Clone the given url and checkout the specific ref."""
 
         def clone_strategy(directory: str) -> None:
-            git.init_repo(directory, repo)
-            env = git.no_git_env()
-
-            def _git_cmd(*args: str) -> None:
-                cmd_output_b('git', *args, cwd=directory, env=env)
-
-            try:
-                self._shallow_clone(ref, _git_cmd)
-            except CalledProcessError:
-                self._complete_clone(ref, _git_cmd)
+            pass
 
         return self._new_repo(repo, ref, deps, clone_strategy)
 

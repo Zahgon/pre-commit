@@ -168,9 +168,7 @@ def xargs(
     def run_cmd_partition(
             run_cmd: tuple[str, ...],
     ) -> tuple[int, bytes, bytes | None]:
-        return cmd_fn(
-            *run_cmd, check=False, stderr=subprocess.STDOUT, **kwargs,
-        )
+        pass
 
     threads = min(len(partitions), target_concurrency)
     with _thread_mapper(threads) as thread_map:

@@ -107,10 +107,7 @@ def _update_one(
         tags_only: bool,
         freeze: bool,
 ) -> tuple[int, RevInfo, RevInfo]:
-    old = RevInfo.from_config(repo)
-    new = old.update(tags_only=tags_only, freeze=freeze)
-    _check_hooks_still_exist_at_rev(repo, new)
-    return i, old, new
+    pass
 
 
 REV_LINE_RE = re.compile(r'^(\s+)rev:(\s*)([\'"]?)([^\s#]+)(.*)(\r?\n)$')

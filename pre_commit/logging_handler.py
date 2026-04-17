@@ -23,12 +23,7 @@ class LoggingHandler(logging.Handler):
         self.use_color = use_color
 
     def emit(self, record: logging.LogRecord) -> None:
-        level_msg = color.format_color(
-            f'[{record.levelname}]',
-            LOG_LEVEL_COLORS[record.levelname],
-            self.use_color,
-        )
-        output.write_line(f'{level_msg} {record.getMessage()}')
+        pass
 
 
 @contextlib.contextmanager

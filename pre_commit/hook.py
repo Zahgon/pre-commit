@@ -38,12 +38,7 @@ class Hook(NamedTuple):
 
     @property
     def install_key(self) -> tuple[Prefix, str, str, tuple[str, ...]]:
-        return (
-            self.prefix,
-            self.language,
-            self.language_version,
-            tuple(self.additional_dependencies),
-        )
+        pass
 
     @classmethod
     def create(cls, src: str, prefix: Prefix, dct: dict[str, Any]) -> Hook:

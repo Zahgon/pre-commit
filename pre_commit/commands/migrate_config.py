@@ -47,12 +47,11 @@ def _migrate_map(contents: str) -> str:
 
 
 def _preserve_style(n: ScalarNode, *, s: str) -> str:
-    style = n.style or ''
-    return f'{style}{s}{style}'
+    pass
 
 
 def _fix_stage(n: ScalarNode) -> str:
-    return _preserve_style(n, s=f'pre-{n.value}')
+    pass
 
 
 def _migrate_composed(contents: str) -> str:
